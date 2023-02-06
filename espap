@@ -1,0 +1,29 @@
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+
+const char *ssid = "ESP8266 AP";
+const char *password = "password";
+
+ESP8266WebServer server(80);
+
+void handleRoot() {
+  String html = "<html><body><h1>Hello from ESP8266!</h1></body></html>";
+  server.send(200, "text/html", html);
+}
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(ssid, password);
+  Serial.println("AP mode started");
+  Serial.print("Access Point (AP) IP address: ");
+  Serial.println(WiFi.softAPIP());
+
+  server.on("/", handleRoot);
+  server.begin();
+  Serial.println("Web server started");
+}
+
+void loop() {
+  server.handleClient();
+}
